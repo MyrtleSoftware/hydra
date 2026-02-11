@@ -156,6 +156,9 @@ stdenv.mkDerivation (finalAttrs: {
 
   strictDeps = true;
 
+  debug = true;
+  mesonBuildType = "debug";
+
   nativeBuildInputs = [
     makeWrapper
     meson

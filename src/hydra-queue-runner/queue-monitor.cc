@@ -15,17 +15,7 @@ void State::queueMonitor()
 {
     while (true) {
         auto conn(dbPool.get());
-        try {
-            queueMonitorLoop(*conn);
-        } catch (pqxx::broken_connection & e) {
-            printMsg(lvlError, "queue monitor: %s", e.what());
-            printMsg(lvlError, "queue monitor: Reconnecting in 10s");
-            conn.markBad();
-            sleep(10);
-        } catch (std::exception & e) {
-            printError("queue monitor: %s", e.what());
-            sleep(10); // probably a DB problem, so don't retry right away
-        }
+        queueMonitorLoop(*conn);
     }
 }
 
@@ -65,17 +55,17 @@ void State::queueMonitorLoop(Connection & conn)
             conn.get_notifs();
 
         if (auto lowestId = buildsAdded.get()) {
-            printMsg(lvlTalkative, "got notification: new builds added to the queue");
+            printMsg(lvlInfo, "got notification: new builds added to the queue");
         }
         if (buildsRestarted.get()) {
-            printMsg(lvlTalkative, "got notification: builds restarted");
+            printMsg(lvlInfo, "got notification: builds restarted");
         }
         if (buildsCancelled.get() || buildsDeleted.get() || buildsBumped.get()) {
-            printMsg(lvlTalkative, "got notification: builds cancelled or bumped");
+            printMsg(lvlInfo, "got notification: builds cancelled or bumped");
             processQueueChange(conn);
         }
         if (jobsetSharesChanged.get()) {
-            printMsg(lvlTalkative, "got notification: jobset shares changed");
+            printMsg(lvlInfo, "got notification: jobset shares changed");
             processJobsetSharesChange(conn);
         }
 

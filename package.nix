@@ -157,7 +157,6 @@ stdenv.mkDerivation (finalAttrs: {
   strictDeps = true;
 
   debug = true;
-  mesonBuildType = "debug";
 
   nativeBuildInputs = [
     makeWrapper
@@ -233,7 +232,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   OPENLDAP_ROOT = openldap;
 
-  mesonBuildType = "release";
+  mesonBuildType = "debug";
 
   postPatch = ''
     patchShebangs .
